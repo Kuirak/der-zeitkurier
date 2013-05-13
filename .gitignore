@@ -1,14 +1,5 @@
-lib-cov
-*.seed
+#Globals
+.DS_Store
+thumbs.db
 *.log
-*.csv
-*.dat
-*.out
-*.pid
-*.gz
 
-pids
-logs
-results
-
-npm-debug.log
