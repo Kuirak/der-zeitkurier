@@ -3,4 +3,7 @@ extends layout
 block content
     h1= title
     p=article
+
+    each item in categories
+        em   #{item},
     P Written on  #{date}
