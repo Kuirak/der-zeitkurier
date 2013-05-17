@@ -8,7 +8,8 @@ var sequelize = new Sequelize('zeitkurier', 'zeit', 'kurier', {
 
 var models =[
     'Article',
-    'Category'
+    'Category',
+    'Keyword'
 ];
 
 models.forEach(function(model){
@@ -19,7 +20,11 @@ models.forEach(function(model){
 (function(m){
     m.Article.hasMany(m.Category);
     m.Category.hasMany(m.Article);
+    m.Article.hasMany(m.Keyword);
+    m.Keyword.belongsTo(m.Article);
+
     sequelize.sync();
 })(module.exports);
+
 
 module.exports.sequelize =sequelize;

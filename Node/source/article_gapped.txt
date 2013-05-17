@@ -1,0 +1,5 @@
+gapped
+Lebensmittel
+23.01.1958
+Guten Appetit! 
+In %s jagen sich seit einigen Monaten die Lebensmittelskandale. Mit der Aufdeckung der Herstellungsgeheimnisse unschmackhafter Butter %s %s %s %s fing es an; dann kam ein großer %s Metzger dran, dessen Fleischwaren Appetit und Gesundheit der vertrauensseligen Kundschaft bedrohten, dann war es ein Nährmittelhändler, in dessen Packungen sich allerhand Ungeziefer tummelte. Jetzt kamen umfangreiche Lebensmittelverfälschungen in mehreren Geschäften %s %s zutage, die zwar von der %s chemischen Untersuchungsanstalt %s festgestellt, jedoch von dem Leiter %s %s %s %s %s %s nicht pflichtgemäß %s %s %s weitergemeldet worden waren. Auch hier handelt es sich um Zustände, die eine unzweifelhafte Gefährdung der Käufer bedeuten.
