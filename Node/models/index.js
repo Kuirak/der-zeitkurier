@@ -3,7 +3,8 @@ var sqlite    = require('sequelize-sqlite').sqlite
 
 var sequelize = new Sequelize('zeitkurier', 'zeit', 'kurier', {
     dialect: 'sqlite',
-    storage: 'models/articles_db.sqlite'
+    storage: 'models/articles_db.sqlite',
+    omitNull: true
 });
 
 var models =[
