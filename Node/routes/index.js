@@ -63,7 +63,7 @@ exports.article_input = function(req,res){
             res.end();
             return;
         }
-        res.redirect("/article/"+id);
+        res.redirect("article/"+id);
     });
 
 };
