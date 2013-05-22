@@ -38,11 +38,11 @@ app.get('/users', user.list);
 
 app.get('/init',routes.init);
 
-app.get("/:id",function(req,res){
+app.get("/article/:id",function(req,res){
 
 
     var Article = app.get('models').Article;
-    Article.find(req.param.id).success(function(art){
+    Article.find(req.params.id).success(function(art){
         var title = art.title;
         var article = art.article;
         var date = art.date;
