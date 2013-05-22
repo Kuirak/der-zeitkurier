@@ -1,0 +1,19 @@
+block content
+    form(name="article_input",method="post")
+        | Title;
+        br
+        input(type="text",name="article[title]",size="65")
+        br
+        | Article:
+        br
+        textarea(name="article[article]",cols="50",rows="20")
+        br
+        | Categories , comma separated:
+        br
+        input(type="text", name="article[categories]",size="65")
+        br
+        | Release Date:
+        input(type="date",name="article[date]")
+        br
+        input(type="submit",value="submit")
+

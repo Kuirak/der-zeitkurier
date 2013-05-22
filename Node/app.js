@@ -27,40 +27,18 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // development only
 if ('development' == app.get('env')) {
-  app.use(express.errorHandler());
-}
+  app.use(express.errorHandler()); }
 
 app.get('/resetdb',routes.resetdb);
 
-
-app.get('/', routes.index);
 app.get('/users', user.list);
 
-app.get('/init',routes.init);
+app.post('/article/input',routes.article_input);
+app.get('/article/input',routes.article_input_form);
 
-app.get("/article/:id",function(req,res){
+app.get("/article/:id",routes.article_id);
 
-
-    var Article = app.get('models').Article;
-    Article.find(req.params.id).success(function(art){
-        var title = art.title;
-        var article = art.article;
-        var date = art.date;
-        art.getCategories().success(function(cat) {
-            var categories=[];
-            for (var i = 0; i < cat.length; i++) {
-                categories.push( cat[i].title);
-            }
-            res.render("article",{title:title,article:article,categories:categories,date:date});
-        } ).error(function(error){
-             console.log(req.param.id + "doesn't exist");
-             res.render("404")
-            })
-
-    });
-
-});
-
+app.get('/', routes.index);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

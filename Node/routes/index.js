@@ -11,6 +11,7 @@ exports.index = function(req, res){
 };
 
 exports.resetdb = function(req,res){
+    res.setHeader("Content-Type", "text/html");
   fs.writeFile(path.resolve(__dirname,'../models/articles_db.sqlite'),'',function(err){
       if(err)throw err;
       console.log("DB reset");
@@ -19,68 +20,70 @@ exports.resetdb = function(req,res){
   });
 };
 
-exports.init = function(req,res){
-    fs.readFile(path.resolve(__dirname,'../source/article_normal.txt'), 'utf8', function (err, article_normal) {
-        if (err)
-            console.log(err);
-        console.log(article_normal)
-        ImportArticle(article_normal);
+
+
+
+exports.article_id =function(req,res){
+    var Article = require('../models').Article;
+    Article.find(req.params.id).success(function(art){
+        if(!art){
+            console.log("id "+ req.params.id + " doesn't exist");
+            res.render("404",{content:"Article id: "+req.params.id});
+            return;
+        }
+        var title = art.title;
+        var article = art.article;
+        var date = art.date;
+        art.getCategories().success(function(cat) {
+            var categories=[];
+            for (var i = 0; i < cat.length; i++) {
+                categories.push( cat[i].title);
+            }
+            res.render("article",{title:title,article:article,categories:categories,date:date});
+        } )
     });
 
-    fs.readFile(path.resolve(__dirname,'../source/article_gapped.txt'), 'utf8', function (err, article_gapped) {
-        if (err)
-            console.log(err);
-        ImportArticle(article_gapped);
-    });
-    res.write("Initialized!");
-    res.end();
 };
 
 
-function ImportArticle(article_data) {
-    var lines= article_data.toString().split(/\r?\n/);
-    var parsedArticle = {gapped: false, categories:null,title:null,date:null};
-    var lineOffset =0;
-    if(lines[0] ==='gapped'){
-        parsedArticle.gapped =true;
-        lineOffset++;
-    }
-    for (var i = 0; i < lines.length; i++) {
-        var line = lines[i];
-        switch(i){
-            case 0+lineOffset:
-                parsedArticle.categories = line.split(',');
-                break;
-            case 1+lineOffset:
-                var date = line.split('.') ;
-                parsedArticle.date = new Date(date[2],date[1],date[0]);
-                break;
-            case 2+lineOffset:
-                parsedArticle.title=line.trim();
-                break;
-            case 3+lineOffset:
-                parsedArticle.article=line;
-        }
-    }
+exports.article_input_form =function(req,res) {
+    res.render("article_input_form");
 
+};
+
+
+exports.article_input = function(req,res){
+    var article_data= req.body.article;
+    article_data.categories = article_data.categories.split(',');
+   // var date = article_data.date.split('-') ;
+  //  article_data.date = new Date(date[0],date[1],date[2]);
+    ImportArticle(article_data,function(err,id){
+        if(err){
+            res.write(err.message);
+            res.end();
+            return;
+        }
+        res.redirect("/article/"+id);
+    });
+
+};
+
+function ImportArticle(article_data,callback) {
+
+    article_data.gapped = false;
     var Article = require("../models").Article;
 
-    Article.findOrCreate({title:parsedArticle.title}, { article: parsedArticle.article, date:parsedArticle.date,gapped:parsedArticle.gapped})
+    Article.create({title: article_data.title, article: article_data.article, date: article_data.date, gapped: article_data.gapped})
         .success(function (article) {
-            for (var i = 0; i < parsedArticle.categories.length; i++) {
-                var title = parsedArticle.categories[i];
-                AddCategoryIfNotExists(title,article);
+            if(!article){
+                callback(new Error("Couldn't Create database entry for "+ article_data.title));
+                return;
             }
-            if(article.gapped){
-                fs.readFile(path.resolve(__dirname,'../source/article_keywords.txt'),'utf8',function(error,keyword_data){
-                    if(error)console.log(error);
-                    var keywords= keyword_data.toString().split(/\r?\n/);
-                    for (var i = 0; i < keywords.length; i++) {
-                        var word = keywords[i];
-                        AddKeywordIfNotExits(word,article,i);
-                    }
-                });
+            for (var i = 0; i < article_data.categories.length; i++) {
+                var title = article_data.categories[i];
+                AddCategoryIfNotExists(title, article);
             }
+            callback(null,article.id);
 
         });
 
