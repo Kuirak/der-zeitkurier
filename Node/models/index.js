@@ -27,5 +27,4 @@ models.forEach(function(model){
     sequelize.sync();
 })(module.exports);
 
-
 module.exports.sequelize =sequelize;
