@@ -1,19 +1,19 @@
 block content
     form(name="article_input",method="post")
-        | Title;
+        label Title;
         br
-        input(type="text",name="article[title]",size="65")
+        input(type="text",name="article[title]",size="65",required="true")
         br
-        | Article:
+        label Article:
         br
-        textarea(name="article[article]",cols="50",rows="20")
+        textarea(name="article[article]",cols="50",rows="20" ,required="true")
         br
-        | Categories , comma separated:
+        label Categories , comma separated:
         br
-        input(type="text", name="article[categories]",size="65")
+        input(type="text", name="article[categories]",size="65",required="true")
         br
-        | Release Date:
-        input(type="date",name="article[date]")
+        label Release Date:
+        input(type="date",name="article[date]",required="true")
         br
         input(type="submit",value="submit")
 

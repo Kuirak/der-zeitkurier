@@ -5,7 +5,7 @@
 
 var express = require('express')
   , routes = require('./routes')
-  , user = require('./routes/user')
+  , article = require('./routes/article')
   , http = require('http')
   , path = require('path')
   ,fs =require('fs');
@@ -19,7 +19,7 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 app.set('models',require('./models'));
 app.use(express.basicAuth('zeitkurier','kurier-der-zeit'));
-app.use(express.favicon());
+app.use(express.favicon(path.join(__dirname,'public/favicon.ico')));
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
@@ -32,14 +32,9 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler()); }
 
 app.get('/resetdb',routes.resetdb);
-
-app.get('/users', user.list);
-
-app.post('/article/input',routes.article_input);
-app.get('/article/input',routes.article_input_form);
-
-app.get("/article/:id",routes.article_id);
-
+app.post('/article/input',article.insertArticleInDB);
+app.get('/article/input',article.showInputForm);
+app.get("/article/:id",article.showById);
 app.get('/', routes.index);
 
 http.createServer(app).listen(app.get('port'), function(){
