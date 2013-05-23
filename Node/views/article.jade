@@ -1,12 +1,17 @@
 extends layout
 
 block content
-    h1= title
-    p=article
+    h1=title
+    hr
+    each article in articles
+        .article
+            h2= article.title
+            p=article.article
+            each item in article.categories
+             em   #{item.title},
+            P Written at #{article.date}
+            br
+            a(href="/article/input") Insert new article
+            hr
 
-    each item in categories
-        em   #{item},
-    P Written on  #{date}
-    br
-    a(href="/article/input") Insert new article
 

@@ -2,4 +2,15 @@ extends layout
 
 block content
   h1= title
-  p Welcome to #{title}
+  a(href="/article/input") Insert a new article
+  br
+  form(name="articleById",action="article",method="get")
+    label Show Article by id:
+    input(type="number",name="id",value="1")
+    input(type="submit",value="Show")
+  h2 By Categories
+  each category, i in categories
+    a(href="/article/category/#{category}") #{category}
+    br
+  else
+      label No Cateogries yet.

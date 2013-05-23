@@ -5,9 +5,16 @@
 var fs = require('fs');
 var app = require("../app").express;
 var path = require('path');
+var models= require("../models");
 
 exports.index = function(req, res){
-  res.render('index', { title: 'Express' });
+    models.Category.all().success(function(categories){
+        for (var i = 0; i < categories.length; i++) {
+            var category = categories[i];
+            categories[i]= category.title;
+        }
+        res.render('index', { title: 'Zeitkurier Database',categories:categories});
+  });
 };
 
 exports.resetdb = function(req,res){

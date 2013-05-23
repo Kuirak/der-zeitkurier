@@ -1,3 +1,5 @@
+  var async  = require("async");
+
 exports.showById =function(req,res){
     var Article = require('../models').Article;
     Article.find(req.params.id).success(function(art){
@@ -12,15 +14,44 @@ exports.showById =function(req,res){
         var dd = date.getDay();
         var mm =date.getMonth();
         var yyyy=date.getFullYear();
-        date = dd+'.'+mm+'.'+yyyy;
+        art.date = dd+'.'+mm+'.'+yyyy;
         art.getCategories().success(function(cat) {
             var categories=[];
             for (var i = 0; i < cat.length; i++) {
                 categories.push( cat[i].title);
             }
-            res.render("article",{title:title,article:article,categories:categories,date:date});
+            art.categories=categories
+            res.render("article",{title:art.title,articles:[art]});
         } )
     });
+
+};
+
+exports.showByCategory = function(req,res){
+   var category= req.params.category;
+   var Category = require('../models').Category;
+   Category.find({title:category}).success(function(cat){
+       cat.getArticles().success(function(articles){
+           async.each(articles,function(art,callback){
+               var date =art.date.split('-');
+               var dd = date[2];
+               var mm =date[1];
+               var yyyy=date[0];
+               art.date = dd+'.'+mm+'.'+yyyy;
+               art.getCategories().success(function(categories){
+                   art.categories=categories;
+
+                   callback(null);
+               })
+           },function(err){
+               if(err)return;
+               res.render('article',{title:category,articles:articles});
+           }) ;
+
+
+   });
+   });
+
 
 };
 
@@ -32,6 +63,10 @@ exports.showInputForm =function(req,res) {
 exports.insertArticleInDB = function(req,res){
     var article_data= req.body.article;
     article_data.categories = article_data.categories.split(',');
+    for (var i = 0; i < article_data.categories.length; i++) {
+        var category = article_data.categories[i];
+        article_data.categories[i]= category.trim();
+    }
     insertArticle(article_data,function(err,id){
         if(err){
             res.write(err.message);
@@ -42,6 +77,7 @@ exports.insertArticleInDB = function(req,res){
     });
 
 };
+
 
 
 function insertArticle(article_data,callback) {
