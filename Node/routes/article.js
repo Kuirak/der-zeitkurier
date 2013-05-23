@@ -16,11 +16,8 @@ exports.showById =function(req,res){
         var yyyy=date.getFullYear();
         art.date = dd+'.'+mm+'.'+yyyy;
         art.getCategories().success(function(cat) {
-            var categories=[];
-            for (var i = 0; i < cat.length; i++) {
-                categories.push( cat[i].title);
-            }
-            art.categories=categories
+
+            art.categories=cat
             res.render("article",{title:art.title,articles:[art]});
         } )
     });
