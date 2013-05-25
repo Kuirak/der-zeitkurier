@@ -6,3 +6,21 @@ body {
 a {
   color: #00B7FF;
 }
+
+.insert{
+    font: 18px "Lucida Grande", Helvetica, Arial, sans-serif;
+    border-style: solid;
+    border-radius: 5px;
+    padding:5px;
+    display: inline-block;
+
+}
+.article{
+    display: inline-block;
+    margin: 25px;
+    max-width: 500px;
+    border: 2px solid gray;
+    border-radius: 5px;
+    box-shadow: 5px 5px 5px dimgray;
+    padding: 10px;
+}
