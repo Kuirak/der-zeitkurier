@@ -7,11 +7,11 @@ block content
         .article
             h2= article.title
             p=article.article
-            each item in article.categories
-             em   #{item.title},
+            each category,i in article.categories
+                a(href="/article/category/#{category.title}") #{category.title}
             P Written at #{article.date}
             br
-            a(href="/article/input") Insert new article
-            hr
+            a.insert(href="/article/input") Insert new article
+
 
 

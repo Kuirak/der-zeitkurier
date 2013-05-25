@@ -13,7 +13,11 @@ exports.index = function(req, res){
             var category = categories[i];
             categories[i]= category.title;
         }
-        res.render('index', { title: 'Zeitkurier Database',categories:categories});
+        models.Article.count().success(function(count){
+            res.render('index', { title: 'Zeitkurier Database',categories:categories,count:count});
+        });
+
+
   });
 };
 

@@ -1,15 +1,14 @@
   var async  = require("async");
+  var models = require('../models');
 
 exports.showById =function(req,res){
-    var Article = require('../models').Article;
-    Article.find(req.params.id).success(function(art){
+
+    models.Article.find(req.params.id).success(function(art){
         if(!art){
             console.log("id "+ req.params.id + " doesn't exist");
             res.render("404",{content:"Article id: "+req.params.id});
             return;
         }
-        var title = art.title;
-        var article = art.article;
         var date = art.date;
         var dd = date.getDay();
         var mm =date.getMonth();
@@ -17,8 +16,8 @@ exports.showById =function(req,res){
         art.date = dd+'.'+mm+'.'+yyyy;
         art.getCategories().success(function(cat) {
 
-            art.categories=cat
-            res.render("article",{title:art.title,articles:[art]});
+            art.categories=cat;
+            res.render("article",{title:art.categories[0].title,articles:[art]});
         } )
     });
 
@@ -26,7 +25,7 @@ exports.showById =function(req,res){
 
 exports.showByCategory = function(req,res){
    var category= req.params.category;
-   var Category = require('../models').Category;
+   var Category = models.Category;
    Category.find({title:category}).success(function(cat){
        cat.getArticles().success(function(articles){
            async.each(articles,function(art,callback){
@@ -50,6 +49,16 @@ exports.showByCategory = function(req,res){
    });
 
 
+};
+
+exports.showAll =function(req,res){
+    models.Article.all().success(function(articles){
+        if(articles){
+        res.render('article',{title:"All Articles",articles:articles});
+        }else{
+            res.render('404',{content:"No Articles"})
+        }
+    });
 };
 
 
@@ -80,32 +89,47 @@ exports.insertArticleInDB = function(req,res){
 function insertArticle(article_data,callback) {
 
     article_data.gapped = false;
-    var Article = require("../models").Article;
+    var Article = models.Article;
+    Article.find({where:{title:article_data.title,date:article_data.date}}).success(function(article){
+       if(article){
+           callback(null,article.id);
+           return;
+       }
+           Article.create({title: article_data.title, article: article_data.article, date: article_data.date, gapped: article_data.gapped})
+               .success(function (createdArticle) {
+                   if(!createdArticle){
+                       callback(new Error("Couldn't Create database entry for "+ article_data.title));
+                       return;
+                   }
+                   async.each(article_data.categories,function(title,callback){
+                       addCategoryIfNotExists(title, createdArticle,callback);
 
-    Article.create({title: article_data.title, article: article_data.article, date: article_data.date, gapped: article_data.gapped})
-        .success(function (article) {
-            if(!article){
-                callback(new Error("Couldn't Create database entry for "+ article_data.title));
-                return;
-            }
-            for (var i = 0; i < article_data.categories.length; i++) {
-                var title = article_data.categories[i];
-                addCategoryIfNotExists(title, article);
-            }
-            callback(null,article.id);
+                   },function(err){
+                       if(err)
+                           callback(new Error("Couldn't Create database entry for "+ article_data.title));
+                       callback(null,createdArticle.id);
+                   });
 
-        });
+
+
+               });
+
+    });
+
+
 
 
 }
 
-function addCategoryIfNotExists(title,article){
-    var Category = require("../models").Category;
-    Category.findOrCreate({title:title}).success(function(category){
+function addCategoryIfNotExists(title,article,callback){
+    models.Category.findOrCreate({title:title}).success(function(category){
         article.hasCategory(category).success(function (result) {
             if (!result) {
                 article.addCategory(category).success(function () {
+                   callback(null);
                 });
+            } else{
+                callback(null);
             }
         });
     })
