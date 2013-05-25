@@ -34,12 +34,7 @@ exports.showByCategory = function(req,res){
                var mm =date[1];
                var yyyy=date[0];
                art.date = dd+'.'+mm+'.'+yyyy;
-               art.getCategories().success(function(categories){
-                   art.categories=categories;
-
-                   callback(null);
-               })
-           },function(err){
+               loadCategoriesForArticles(art,callback);},function(err){
                if(err)return;
                res.render('article',{title:category,articles:articles});
            }) ;
@@ -51,10 +46,22 @@ exports.showByCategory = function(req,res){
 
 };
 
+function loadCategoriesForArticles(art,callback){
+      art.getCategories().success(function(categories){
+          art.categories=categories;
+
+          callback(null);
+      })
+}
+
 exports.showAll =function(req,res){
     models.Article.all().success(function(articles){
         if(articles){
-        res.render('article',{title:"All Articles",articles:articles});
+            async.each(articles,loadCategoriesForArticles,function(err){
+                if(err)return;
+                res.render('article',{title:"All Articles",articles:articles});
+            }) ;
+
         }else{
             res.render('404',{content:"No Articles"})
         }
@@ -63,7 +70,7 @@ exports.showAll =function(req,res){
 
 
 exports.showInputForm =function(req,res) {
-    res.render("article_input_form");
+    res.render("article_input_form",{title:"Insert an Article"});
 };
 
 exports.insertArticleInDB = function(req,res){

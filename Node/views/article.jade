@@ -2,9 +2,11 @@ extends layout
 
 block content
     h1=title
+
     hr
     each article in articles
         .article
+            h2.id=article.id
             h2= article.title
             p=article.article
             each category,i in article.categories
