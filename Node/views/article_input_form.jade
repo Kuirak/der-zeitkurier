@@ -1,10 +1,12 @@
 extends layout
 
 block content
-    form(name="article_input",method="post")
-        label Title;
+   #formDiv
+      form(name="article_input",method="post")
+        label Title:
         br
         input(type="text",name="article[title]",size="65",required="true")
+        br
         br
         label Article:
         br
@@ -14,8 +16,10 @@ block content
         br
         input(type="text", name="article[categories]",size="65",required="true")
         br
+        br
         label Release Date:
         input(type="date",name="article[date]",required="true")
         br
-        input(type="submit",value="submit")
+        br
+        input#submit.insert(type="submit",value="Insert into Database")
 
