@@ -35,6 +35,7 @@ app.get('/resetdb',routes.resetdb);
 app.post('/article/input',article.insertArticleInDB);
 app.get('/article/input',article.showInputForm);
 app.get('/article/showall',article.showAll);
+app.post("/article/:id/update",article.updateById);
 app.get("/article/:id",article.showById);
 app.get('/article/category/:category',article.showByCategory);
 app.get("/article",function(req,res){

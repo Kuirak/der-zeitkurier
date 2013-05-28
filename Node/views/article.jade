@@ -5,15 +5,20 @@ block content
 
     hr
     each article in articles
-        .article
+        .articleDiv
             h2.id=article.id
-            h2= article.title
-            p=article.article
+            h2.title(contenteditable='true')= article.title
+            p.article(contenteditable='true')=article.article
             each category,i in article.categories
                 a(href="/article/category/#{category.title}") #{category.title}
-            P Written at #{article.date}
+                |&nbsp
+            span.categories(contenteditable='true') new category
+            p Written at &nbsp
+                span.date(contenteditable='true')= article.date
             br
-            a.insert(href="/article/input") Insert new article
+            .articleFooter
+                a(href="/article/input")
+                    input.insert(type='button', value='Insert new article')
 
 
 

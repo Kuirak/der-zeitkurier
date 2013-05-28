@@ -80,14 +80,10 @@ exports.showInputForm = function (req, res) {
 
 
 exports.insertArticleInDB = function (req, res) {
-    var article_data = req.body.article;
-    article_data.categories = article_data.categories.split(',');
-    for (var i = 0; i < article_data.categories.length; i++) {
-        var category = article_data.categories[i];
-        article_data.categories[i] = category.trim();
-    }
+    var article_data = cleanArticleBody(req);
     insertArticle(article_data, function (err, id) {
         if (err) {
+            res.statusCode=404;
             res.write(err.message);
             res.end();
             return;
@@ -96,6 +92,62 @@ exports.insertArticleInDB = function (req, res) {
     });
 
 };
+
+exports.updateById = function(req,res){
+    var article_data = cleanArticleBody(req);
+    article_data.id = req.params.id;
+    updateArticle(article_data,function(err,id){
+        if(err){
+            res.statusCode=404;
+            res.end();
+            return;
+        }
+        res.statusCode= 200;
+        res.end();
+    })
+};
+
+
+function cleanArticleBody(req){
+    var article_data = req.body.article;
+    if(article_data.categories){
+    article_data.categories = article_data.categories.split(',');
+
+    for (var i = 0; i < article_data.categories.length; i++) {
+        var category = article_data.categories[i];
+        article_data.categories[i] = category.trim();
+    }
+    }
+    return article_data
+}
+
+
+function updateArticle(article_data,callback){
+    models.Article.find(article_data.id).success(function(article){
+       article.updateAttributes({
+            title: article_data.title,
+            article: article_data.article,
+            date: article_data.date
+       });
+        if(article_data.categories){
+        async.each(article_data.categories, function (title, callback) {
+            addCategoryIfNotExists(title, article, callback);
+
+        }, function (err) {
+            if (err){
+                callback(new Error("Couldn't Create database entry for " + article_data.title));
+                return;
+            }
+            callback(null, article.id);
+
+        });
+        }
+        callback(null, article.id);
+
+    });
+
+
+}
 
 
 function insertArticle(article_data, callback) {
