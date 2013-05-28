@@ -6,20 +6,11 @@ import zeitscanner
 
 dbclient = zeitarticledbclient.ArticleDatabaseClient("localhost:3000")
 
-# setup a callback
-def scanner_handler(proc, image, closure):
-    # extract results
-    for symbol in image:
-        if not symbol.count:
-            # do something useful with results
-            print 'decoded', symbol.type, 'symbol', '"%s"' % symbol.data
 
-scanner = zeitscanner.Scanner('/dev/video0', scanner_handler)
-results = scanner.scan_one()
+scanner = zeitscanner.Scanner('/dev/video0')
+result = scanner.scan_one()
+print result
 
-for symbol in results:
-    # do something useful with results
-    print 'decoded', symbol.type, 'symbol', '"%s"' % symbol.data
 
 
 #article = dbclient.get_article(1)

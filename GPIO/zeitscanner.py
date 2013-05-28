@@ -1,16 +1,23 @@
 import zbar
 
 class Scanner:
-    def __init__(self, device, data_handler):
+    def __init__(self, device):
         self.proc = zbar.Processor()
         self.proc.parse_config('enable')
-        self.proc.request_size(160,120)
+        
         self.proc.init(device)
         self.proc.visible = False
 
     def scan_one(self):
         self.proc.process_one()
-        return self.proc.results
+        
+        for symbol in self.proc.results :
+           result = symbol.data           
+           index = result.find('=')+1
+           result =result[index:]
+        return result
+           
+        
 #needs some testing
 
 
