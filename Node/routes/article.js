@@ -6,18 +6,42 @@ exports.showById = function (req, res) {
     models.Article.find(req.params.id).success(function (art) {
         if (!art) {
             console.log("id " + req.params.id + " doesn't exist");
-            res.render("404", {content: "Article id: " + req.params.id});
+            res.status(404).render("404", {content: "Article id: " + req.params.id});
             return;
         }
         loadCategoriesAndFormatDate(art,function(err){
-            if(err)
+            if(err){
                 res.end();
+                return;
+            }
             res.render("article", {title: art.categories[0].title, articles: [art]});
         });
     });
 
 };
 
+
+exports.getById = function(req,res){
+   models.Article.find(req.params.id).success(function(art){
+       if(!art){
+           res.status(404);
+           res.end();
+       }
+       loadCategoriesAndFormatDate(art,function(err){
+           if(err) {
+               res.status(500);
+              res.end()
+               return;
+           }
+           for (var i = 0; i < art.categories.length; i++) {
+               var cat= art.categories[i];
+               art.categories[i] =cat.title;
+           }
+           res.send({article:{title:art.title,article:art.article,categories:art.categories,date:art.date}});
+
+       })
+   })
+};
 
 exports.showByCategory = function (req, res) {
     var category = req.params.category;
@@ -45,7 +69,6 @@ function formatDate(date) {
 function loadCategoriesForArticles(art, callback) {
     art.getCategories().success(function (categories) {
         art.categories = categories;
-
         callback(null);
     })
 }
@@ -68,7 +91,7 @@ exports.showAll = function (req, res) {
             });
 
         } else {
-            res.render('404', {content: "No Articles"})
+            res.status(404).render('404', {content: "No Articles"})
         }
     });
 };
@@ -83,7 +106,7 @@ exports.insertArticleInDB = function (req, res) {
     var article_data = cleanArticleBody(req);
     insertArticle(article_data, function (err, id) {
         if (err) {
-            res.statusCode=404;
+            res.status(404);
             res.write(err.message);
             res.end();
             return;
@@ -98,12 +121,11 @@ exports.updateById = function(req,res){
     article_data.id = req.params.id;
     updateArticle(article_data,function(err,id){
         if(err){
-            res.statusCode=404;
+            res.status(404);
             res.end();
             return;
         }
-        res.statusCode= 200;
-        res.end();
+        res.status(200).end();
     })
 };
 
