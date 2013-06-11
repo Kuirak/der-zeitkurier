@@ -242,11 +242,9 @@ function updateArticle(article_data,callback){
 
 
 function insertArticle(article_data, callback) {
-
-    article_data.gapped = false;
     var Article = models.Article;
     Article.find({where: {title: article_data.title, date: article_data.date}}).success(function (article) {
-        if (article) {
+        if (article && !article_data.primary) {
             callback(null, article.id);
             return;
         }
@@ -256,8 +254,6 @@ function insertArticle(article_data, callback) {
                     callback(new Error("Couldn't Create database entry for " + article_data.title));
                     return;
                 }
-
-
                 async.each(article_data.categories, function (title, callback) {
                     addCategoryIfNotExists(title, createdArticle, callback);
 
@@ -266,13 +262,8 @@ function insertArticle(article_data, callback) {
                         callback(new Error("Couldn't Create database entry for " + article_data.title));
                     callback(null, createdArticle.id);
                 });
-
-
             });
-
     });
-
-
 }
 
 
