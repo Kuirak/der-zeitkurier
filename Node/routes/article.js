@@ -46,7 +46,7 @@ exports.getById = function(req,res){
 
 exports.showByCategory = function (req, res) {
     var category = req.params.category;
-    models.Category.find({title: category}).success(function (cat) {
+    models.Category.find({where:{title: category}}).success(function (cat) {
         cat.getArticles().success(function (articles) {
             async.each(articles, loadDetails, function (err) {
                 if (err)return;

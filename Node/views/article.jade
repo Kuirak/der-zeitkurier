@@ -9,6 +9,10 @@ block content
         |&nbsp
         a(href="/article/input")
             input.insert(type='button', value='Insert new article')
+        .primary.articleDiv
+            p Primary
+        .articleDiv
+            p Secondary
     hr
     each article in articles
         div(class="#{article.primary ? 'articleDiv primary' :'articleDiv'}")
