@@ -44,6 +44,7 @@ app.get("/article/:id/qrcode",function(req,res){
     }
 });
 app.get("/article/qrcode/:id",article.getQrCode);
+app.get("/article/allqrcode",article.getAllQrCodes);
 app.get("/article/:id",article.showById);
 app.post("/article/:id",article.getById);
 app.get('/article/category/:category',article.showByCategory);
@@ -53,6 +54,7 @@ app.get("/article",function(req,res){
         article.showById(req,res);
     }
 });
+app.get('/404',routes.notFound)
 app.get('/', routes.index);
 
 

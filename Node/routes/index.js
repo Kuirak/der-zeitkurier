@@ -31,4 +31,9 @@ exports.resetdb = function(req,res){
   });
 };
 
+exports.notFound = function(req,res){
+    res.render('404',{content:'Content'});
+
+};
+
 

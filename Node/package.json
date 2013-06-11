@@ -10,7 +10,8 @@
     "jade": "*",
     "sequelize-sqlite":"*",
     "async":"*",
-    "sugar":"*"
+    "sugar":"*",
+    "archiver": "*"
 
   }
 }

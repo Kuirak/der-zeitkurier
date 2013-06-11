@@ -1,4 +1,6 @@
-var async = require("async");
+var async = require("async")
+    ,archiver =require("archiver")
+    ,sugar =require('sugar');
 var models = require('../models');
 
 
@@ -31,7 +33,7 @@ exports.getById = function(req,res){
        loadDetails(art,function(err){
            if(err) {
                res.status(500);
-              res.end()
+              res.end();
                return;
            }
            for (var i = 0; i < art.categories.length; i++) {
@@ -57,25 +59,7 @@ exports.showByCategory = function (req, res) {
 };
 
 
-exports.getQrCode =function(req,res){
-    var http = require('http');
-    var options ={
-        hostname:'chart.apis.google.com',
-        path:'/chart?cht=qr&chs=547x547&choe=UTF-8&chl=http://der-zeitkurier.de?id='+req.params.id
 
-    };
-    var request = http.request(options,function(response){
-        res.set('Content-Type','application/octet-stream');
-        res.set('Content-Disposition','attachment;filename=QrCodeId'+req.params.id+'.png');
-        response.pipe(res);
-    });
-    request.on('error',function(err){
-        console.log(err);
-        res.render('404',{title:'404',content: 'qrcode'});
-    });
-    request.end();
-    //http://chart.apis.google.com/chart?cht=qr&chs=547x547&choe=UTF-8&chl=http://der-zeitkurier.de?id=3
-};
 
 function formatDate(date) {
     var dateSplit = date.split('-');
@@ -195,6 +179,61 @@ exports.updateQrCodeId =function(req,res){
             res.redirect('/article/showall');
         });
     })
+
+};
+
+
+exports.getQrCode =function(req,res){
+        res.set('Content-Type','application/octet-stream');
+        res.set('Content-Disposition','attachment;filename=QrCodeId'+req.params.id+'.png');
+        getQrCodeFromGoogle(req.params.id,function(err,response){
+            if(err){
+                res.redirect(404,'/404');
+                return;
+            }
+            response.pipe(res);
+        });
+
+    //http://chart.apis.google.com/chart?cht=qr&chs=547x547&choe=UTF-8&chl=http://der-zeitkurier.de?id=3
+};
+
+function getQrCodeFromGoogle(id,callback){
+    var http = require('http');
+    var options ={
+        hostname:'chart.apis.google.com',
+        path:'/chart?cht=qr&chs=547x547&choe=UTF-8&chl=http://der-zeitkurier.de?id='+id
+
+    };
+    var request = http.request(options,function(response){
+        callback(null,response);
+    });
+    request
+        .on('error',function(err){
+        callback(err);
+    });
+    request.end();
+}
+
+exports.getAllQrCodes = function(req,res){
+    var zip = archiver('zip');
+    //res.set('Content-Type','application/octet-stream');
+    res.set('Content-Disposition','attachment;filename=AllQrCodes.zip');
+    zip.pipe(res);
+    function addQrCode(article,callback){
+         getQrCodeFromGoogle(article.qrcode_id,function(err,stream){
+             zip.append(stream,{name:(article.id+'_'+article.title.first(35).normalize()).underscore()+'.png'},callback);
+         })
+    }
+    models.Article.findAll({where:{primary:true}}).success(function(articles){
+        async.eachSeries(articles,addQrCode,function(err){
+             if(err)return res.status(500).end();
+             zip.finalize(function(err,written){
+                 console.log("Wrote "+written+" Bytes to a streamed zip file")
+
+             })
+        })
+    })
+
 
 };
 
