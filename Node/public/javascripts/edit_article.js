@@ -18,7 +18,7 @@ $(document).ready(function () {
     $('.articleDiv').on('change',function(){
         var $this=$(this);
         if($('#save').length === 0){
-        $('.articleFooter').append('<input type="button" id="save" class="insert" value="Save">').click(function(){
+        $('.articleFooter',$this).append('<input type="button" id="save" class="insert" value="Save">').click(function(){
 
             var id = $this.find('.id').text();
             var article=$this.find('.article').text();
@@ -30,18 +30,7 @@ $(document).ready(function () {
             $.post('/article/'+ id +'/update',{article:{id:id,article:article,title:title,date:date}});
         });
         }
-        if($('#reset').length === 0){
-            $('.articleFooter').append('<input type="button" id="reset" class="insert" value="Reset">').click(function(){
 
-                var id = $this.find('.id').text();
-
-                $.get('/article/'+ id,function(data){
-
-
-                    $this.replaceWith(html);
-                });
-            });
-        }
 
     });
 

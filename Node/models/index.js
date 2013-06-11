@@ -10,7 +10,8 @@ var sequelize = new Sequelize('zeitkurier', 'zeit', 'kurier', {
 var models =[
     'Article',
     'Category',
-    'Keyword'
+    'Keyword',
+
 ];
 
 models.forEach(function(model){

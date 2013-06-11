@@ -3,8 +3,11 @@ html
   head
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/stylesheets/lib/ui-lightness/jquery-ui-1.10.3.custom.min.css')
     script(src='/javascripts/lib/jquery-1.10.0.min.js')
-    script(src='/javascripts/edit_article.js')
+    script(src='/javascripts/lib/jquery-ui-1.10.3.custom.min.js')
+
+    block scripts
   body
     a(href="/") Home
     block content

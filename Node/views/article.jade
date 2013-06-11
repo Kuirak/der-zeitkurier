@@ -1,24 +1,40 @@
 extends layout
+append scripts
+    //script(src='/javascripts/edit_article.js')
+    script(src='/javascripts/lib/jquery.classyqr.js')
+    script(src='/javascripts/qrcode.js')
 
 block content
     h1=title
-
+        |&nbsp
+        a(href="/article/input")
+            input.insert(type='button', value='Insert new article')
     hr
     each article in articles
-        .articleDiv
+        div(class="#{article.primary ? 'articleDiv primary' :'articleDiv'}")
+
             h2.id=article.id
             h2.title(contenteditable='true')= article.title
             p.article(contenteditable='true')=article.article
             each category,i in article.categories
                 a(href="/article/category/#{category.title}") #{category.title}
                 |&nbsp
-            span.categories(contenteditable='true') new category
             p Written at &nbsp
                 span.date(contenteditable='true')= article.date
             br
+            hr
+            if article.primary
+              if('undefined' !== typeof(article.secondaryArticles))
+                form(action="/article/#{article.id}/qrcode", method="get")
+                    label QRCode - Secondary Article ID:
+                        select(name="qrcode_id")
+                            each secondary,i in article.secondaryArticles
+                                option(value=secondary.id) ID #{secondary.id}: #{secondary.title}
+                        input.insert(type="submit",value="Save QrCode Id")
+              if article.qrcode_id
+                p.qr http://der-zeitkurier.de?id=#{article.qrcode_id}
+
+                div
+                   a.qrCodeURL(href="/article/qrcode/#{article.qrcode_id}")
+                     img.qrcode
             .articleFooter
-                a(href="/article/input")
-                    input.insert(type='button', value='Insert new article')
-
-
-

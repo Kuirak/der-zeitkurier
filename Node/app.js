@@ -36,6 +36,14 @@ app.post('/article/input',article.insertArticleInDB);
 app.get('/article/input',article.showInputForm);
 app.get('/article/showall',article.showAll);
 app.post("/article/:id/update",article.updateById);
+app.get("/article/:id/qrcode",function(req,res){
+    if(req.query.qrcode_id){
+        article.updateQrCodeId(req,res);
+    }else{
+        res.status(400).end();
+    }
+});
+app.get("/article/qrcode/:id",article.getQrCode);
 app.get("/article/:id",article.showById);
 app.post("/article/:id",article.getById);
 app.get('/article/category/:category',article.showByCategory);
@@ -46,6 +54,7 @@ app.get("/article",function(req,res){
     }
 });
 app.get('/', routes.index);
+
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

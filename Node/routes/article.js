@@ -2,6 +2,7 @@ var async = require("async");
 var models = require('../models');
 
 
+
 exports.showById = function (req, res) {
     models.Article.find(req.params.id).success(function (art) {
         if (!art) {
@@ -9,7 +10,7 @@ exports.showById = function (req, res) {
             res.status(404).render("404", {content: "Article id: " + req.params.id});
             return;
         }
-        loadCategoriesAndFormatDate(art,function(err){
+        loadDetails(art,function(err){
             if(err){
                 res.end();
                 return;
@@ -27,7 +28,7 @@ exports.getById = function(req,res){
            res.status(404);
            res.end();
        }
-       loadCategoriesAndFormatDate(art,function(err){
+       loadDetails(art,function(err){
            if(err) {
                res.status(500);
               res.end()
@@ -37,7 +38,7 @@ exports.getById = function(req,res){
                var cat= art.categories[i];
                art.categories[i] =cat.title;
            }
-           res.send({article:{title:art.title,article:art.article,categories:art.categories,date:art.date}});
+           res.send({article:{title:art.title,article:art.article,categories:art.categories,date:art.date,qrcode_id:art.qrcode_id}});
 
        })
    })
@@ -47,7 +48,7 @@ exports.showByCategory = function (req, res) {
     var category = req.params.category;
     models.Category.find({title: category}).success(function (cat) {
         cat.getArticles().success(function (articles) {
-            async.each(articles, loadCategoriesAndFormatDate, function (err) {
+            async.each(articles, loadDetails, function (err) {
                 if (err)return;
                 res.render('article', {title: category, articles: articles});
             });
@@ -56,13 +57,35 @@ exports.showByCategory = function (req, res) {
 };
 
 
+exports.getQrCode =function(req,res){
+    var http = require('http');
+    var options ={
+        hostname:'chart.apis.google.com',
+        path:'/chart?cht=qr&chs=547x547&choe=UTF-8&chl=http://der-zeitkurier.de?id='+req.params.id
+
+    };
+    var request = http.request(options,function(response){
+        res.set('Content-Type','application/octet-stream');
+        res.set('Content-Disposition','attachment;filename=QrCodeId'+req.params.id+'.png');
+        response.pipe(res);
+    });
+    request.on('error',function(err){
+        console.log(err);
+        res.render('404',{title:'404',content: 'qrcode'});
+    });
+    request.end();
+    //http://chart.apis.google.com/chart?cht=qr&chs=547x547&choe=UTF-8&chl=http://der-zeitkurier.de?id=3
+};
+
 function formatDate(date) {
-    if (date instanceof Date) {
-        return date.getDay() + '.' + date.getMonth() + '.' + date.getFullYear();
-    } else {
-        date = date.split('-');
-        return date[2] + '.' + date[1] + '.' + date[0];
+    var dateSplit = date.split('-');
+    if(dateSplit.length>0)
+        return dateSplit[2] + '.' + dateSplit[1] + '.' + dateSplit[0];
+    else {
+        dateSplit =date.split('.');
+        return dateSplit[2]+'-' +dateSplit[1]+'-'+dateSplit[0];
     }
+
 }
 
 
@@ -74,20 +97,57 @@ function loadCategoriesForArticles(art, callback) {
 }
 
 
-function loadCategoriesAndFormatDate(art,callback){
-
+function loadDetails(art,callback){
         art.date = formatDate(art.date);
-        loadCategoriesForArticles(art, callback);
-
+        var loadSecondarys = false;
+        var loadCategories =false;
+        loadCategoriesForArticles(art,function(err){
+            if(loadSecondarys){
+                callback(err);
+            }else{
+              loadCategories=true;
+            }
+        });
+        loadSecondarysForArticles(art,function(err){
+            if(loadCategories){
+                callback(err);
+            }else{
+                loadSecondarys=true;
+            }
+        });
 }
 
+function loadSecondarysForArticles(art,callback){
+      function getSecondarys(category,callback){
+          category.getArticles({where:{primary:false},attributes:['id','title']}).success(function(articles){
+              art.secondaryArticles =articles;
+              callback(null);
+          })
+      }
+      if(art.primary){
+          art.getCategories().success(function(categories){
+              async.each(categories,getSecondarys,function(err){
+                  if(err){
+                      callback(err);
+                      return;
+                  }
+                  callback(null);
+              })
+          });
+
+      }else{
+          callback(null);
+      }
+}
 
 exports.showAll = function (req, res) {
     models.Article.all().success(function (articles) {
         if (articles) {
-            async.each(articles,loadCategoriesAndFormatDate, function (err) {
+            async.each(articles,loadDetails, function (err) {
                 if (err)return;
                 res.render('article', {title: "All Articles", articles: articles});
+
+
             });
 
         } else {
@@ -127,6 +187,15 @@ exports.updateById = function(req,res){
         }
         res.status(200).end();
     })
+};
+
+exports.updateQrCodeId =function(req,res){
+    models.Article.find(req.params.id).success(function(article){
+        article.updateAttributes({qrcode_id:req.query.qrcode_id}).success(function(){
+            res.redirect('/article/showall');
+        });
+    })
+
 };
 
 
@@ -181,12 +250,14 @@ function insertArticle(article_data, callback) {
             callback(null, article.id);
             return;
         }
-        Article.create({title: article_data.title, article: article_data.article, date: article_data.date, gapped: article_data.gapped})
+        Article.create({title: article_data.title, article: article_data.article, date: article_data.date, primary: article_data.primary || false})
             .success(function (createdArticle) {
                 if (!createdArticle) {
                     callback(new Error("Couldn't Create database entry for " + article_data.title));
                     return;
                 }
+
+
                 async.each(article_data.categories, function (title, callback) {
                     addCategoryIfNotExists(title, createdArticle, callback);
 

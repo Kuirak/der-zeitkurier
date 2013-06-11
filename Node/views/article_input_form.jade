@@ -1,4 +1,6 @@
 extends layout
+append scripts
+    script(src='/javascripts/pickdate.js')
 
 block content
    #formDiv
@@ -17,8 +19,12 @@ block content
         input(type="text", name="article[categories]",size="65",required="true")
         br
         br
-        label Release Date:
-        input(type="date",name="article[date]",required="true")
+        label Release Date YYYY-MM-DD:
+        input#datepicker(type="text",name="article[date]",required="true")
+        br
+        br
+        label Primary Article:
+        input(type="checkbox",name="article[primary]")
         br
         br
         input#submit.insert(type="submit",value="Insert into Database")
