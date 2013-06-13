@@ -28,17 +28,31 @@ block content
             br
             hr
             if article.primary
+              if('undefined' !== typeof(article.secondaries))
+                form(action="/article/#{article.id}/rmsecondaries", method="post")
+                    label Already added secondaries (multi select):
+                        select(name="id[]",multiple="true",size=article.secondaries.length)
+                             each secondary,i in article.secondaries
+                                 option(value=secondary.id) ID #{secondary.id}: #{secondary.title}
+                    br
+                    input.insert(type="submit",value="Remove Secondary")
+
               if('undefined' !== typeof(article.secondaryArticles))
-                form(action="/article/#{article.id}/qrcode", method="get")
-                    label QRCode - Secondary Article ID:
-                        select(name="qrcode_id")
+              .selectSecondaryDiv
+                form(action="/article/#{article.id}/addsecondaries", method="post")
+                    label Secondary(multi select):
+                    br
+                    select(name="id[]",multiple="true",size="8")
                             each secondary,i in article.secondaryArticles
                                 option(value=secondary.id) ID #{secondary.id}: #{secondary.title}
-                        input.insert(type="submit",value="Save QrCode Id")
-              if article.qrcode_id
-                p.qr http://der-zeitkurier.de?id=#{article.qrcode_id}
+                    br
+                    input.insert(type="submit",value="Add Secondary")
 
-                div
-                   a.qrCodeURL(href="/article/qrcode/#{article.qrcode_id}")
+
+
+              .qrDiv
+
+                   a.qrCodeURL(href="/article/qrcode/#{article.id}")
                      img.qrcode
+                   p.qr http://der-zeitkurier.de?id=#{article.id}
             .articleFooter

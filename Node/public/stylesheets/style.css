@@ -19,7 +19,7 @@ a {
 .articleDiv{
     display: inline-block;
     margin: 25px;
-    max-width: 500px;
+    max-width: 510px;
     border: 2px solid gray;
     border-radius: 5px;
     box-shadow: 5px 5px 5px dimgray;
@@ -47,7 +47,17 @@ a {
 }
 
 .qrcode{
-    width:200px;
-    height:200px;
+    width:150px;
+    height:150px;
 }
 
+.selectSecondaryDiv {
+    width: 230px;
+   float:left;
+}
+
+.qrDiv{
+    width: 220px;
+    float:right;
+    margin-right: 5px;
+}

@@ -40,7 +40,8 @@ exports.getById = function(req,res){
                var cat= art.categories[i];
                art.categories[i] =cat.title;
            }
-           res.send({article:{title:art.title,article:art.article,categories:art.categories,date:art.date,qrcode_id:art.qrcode_id}});
+           res.send({article:{title:art.title,article:art.article,categories:art.categories,date:art.date}});
+           res.send({article:{title:art.title,article:art.article,categories:art.categories,date:art.date}});
 
        })
    })
@@ -83,21 +84,17 @@ function loadCategoriesForArticles(art, callback) {
 
 function loadDetails(art,callback){
         art.date = formatDate(art.date);
-        var loadSecondarys = false;
-        var loadCategories =false;
-        loadCategoriesForArticles(art,function(err){
-            if(loadSecondarys){
-                callback(err);
-            }else{
-              loadCategories=true;
-            }
-        });
-        loadSecondarysForArticles(art,function(err){
-            if(loadCategories){
-                callback(err);
-            }else{
-                loadSecondarys=true;
-            }
+        async.parallel([
+            function(cb){
+                loadCategoriesForArticles(art,function(err){
+                    cb(err);
+                });
+            },function(cb){
+                loadSecondarysForArticles(art,function(err){
+                    cb(err);
+            })}
+        ],function(err){
+            callback(err);
         });
 }
 
@@ -109,15 +106,29 @@ function loadSecondarysForArticles(art,callback){
           })
       }
       if(art.primary){
-          art.getCategories().success(function(categories){
-              async.each(categories,getSecondarys,function(err){
-                  if(err){
-                      callback(err);
-                      return;
-                  }
-                  callback(null);
-              })
+          async.parallel([
+              function(cb){
+                    art.getSecondary({attributes:['id','title']}).success(function(secondaries){
+                    art.secondaries =secondaries;
+                        cb(null);
+                  })
+              } ,
+              function(cb){
+                  art.getCategories().success(function(categories){
+                      async.each(categories,getSecondarys,function(err){
+                          if(err){
+                              cb(err);
+                              return;
+                          }
+                          cb(null);
+                      })
+                  });
+              }
+
+          ],function(err){
+              callback(err);
           });
+
 
       }else{
           callback(null);
@@ -173,14 +184,52 @@ exports.updateById = function(req,res){
     })
 };
 
-exports.updateQrCodeId =function(req,res){
-    models.Article.find(req.params.id).success(function(article){
-        article.updateAttributes({qrcode_id:req.query.qrcode_id}).success(function(){
+exports.addSecondaries =function(req,res){
+    models.Article.find(req.params.id).success(function(primary){
+        function _addSecondaries(id, callback) {
+            models.Article.find(id).success(function (secondary) {
+                primary.hasSecondary(secondary).success(function (result) {
+                    if (!result) {
+                        primary.addSecondary(secondary).success(function () {
+                            callback(null);
+                        })
+                    } else {
+                        callback(null);
+                    }
+                });
+            });
+        }
+        async.each(req.body.id,_addSecondaries,function(err){
+            if(err) console.log('Error while adding Secondaries');
             res.redirect('/article/showall');
-        });
-    })
+        })
+
+    });
 
 };
+
+exports.removeSecondaries =function(req,res){
+    models.Article.find(req.params.id).success(function(primary){
+        function _removeSecondaries(id, callback) {
+            models.Article.find(id).success(function (secondary) {
+                primary.hasSecondary(secondary).success(function (result) {
+                    if (result) {
+                        primary.removeSecondary(secondary).success(function () {
+                            callback(null);
+                        })
+                    } else {
+                        callback(null);
+                    }
+                });
+            });
+        }
+        async.each(req.body.id,_removeSecondaries,function(err){
+            if(err) console.log('Error while adding Secondaries');
+            res.redirect('/article/showall');
+        })
+
+    });
+}
 
 
 exports.getQrCode =function(req,res){
@@ -220,8 +269,8 @@ exports.getAllQrCodes = function(req,res){
     res.set('Content-Disposition','attachment;filename=AllQrCodes.zip');
     zip.pipe(res);
     function addQrCode(article,callback){
-         getQrCodeFromGoogle(article.qrcode_id,function(err,stream){
-             zip.append(stream,{name:(article.id+'_'+article.title.first(35).normalize()).underscore()+'.png'},callback);
+         getQrCodeFromGoogle(article.id,function(err,stream){
+             zip.append(stream,{name:('ID'+article.id+'-'+article.title.first(35).normalize()).underscore()+'.png'},callback);
          })
     }
     models.Article.findAll({where:{primary:true}}).success(function(articles){

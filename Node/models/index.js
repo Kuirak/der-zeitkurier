@@ -10,7 +10,7 @@ var sequelize = new Sequelize('zeitkurier', 'zeit', 'kurier', {
 var models =[
     'Article',
     'Category',
-    'Keyword',
+    'Keyword'
 
 ];
 
@@ -24,6 +24,7 @@ models.forEach(function(model){
     m.Category.hasMany(m.Article);
     m.Article.hasMany(m.Keyword);
     m.Keyword.belongsTo(m.Article);
+    m.Article.hasMany(m.Article,{as:'Secondary'});
 
     sequelize.sync();
 })(module.exports);

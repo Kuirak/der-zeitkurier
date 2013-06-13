@@ -36,13 +36,9 @@ app.post('/article/input',article.insertArticleInDB);
 app.get('/article/input',article.showInputForm);
 app.get('/article/showall',article.showAll);
 app.post("/article/:id/update",article.updateById);
-app.get("/article/:id/qrcode",function(req,res){
-    if(req.query.qrcode_id){
-        article.updateQrCodeId(req,res);
-    }else{
-        res.status(400).end();
-    }
-});
+app.post("/article/:id/addsecondaries",article.addSecondaries);
+app.post("/article/:id/rmsecondaries",article.removeSecondaries);
+
 app.get("/article/qrcode/:id",article.getQrCode);
 app.get("/article/allqrcode",article.getAllQrCodes);
 app.get("/article/:id",article.showById);

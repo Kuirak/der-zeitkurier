@@ -4,7 +4,7 @@ module.exports = function (sequelize, DataTypes) {
         date: {type: DataTypes.STRING, allowNull: false,validate:{isDate:true}},
         article: {type: DataTypes.TEXT, allowNull: false},
         primary:{type: DataTypes.BOOLEAN,allowNull: false},
-        qrcode_id:{type: DataTypes.STRING}
+        printed_count:{type: DataTypes.INTEGER,defaultValue:0}
 
     })
 };
