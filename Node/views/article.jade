@@ -1,12 +1,12 @@
 extends layout
 append scripts
-    //script(src='/javascripts/edit_article.js')
+//script(src='/javascripts/edit_article.js')
     script(src='/javascripts/lib/jquery.classyqr.js')
     script(src='/javascripts/qrcode.js')
 
 block content
     h1=title
-        |&nbsp
+        | &nbsp
         a(href="/article/input")
             input.insert(type='button', value='Insert new article')
         .primary.articleDiv
@@ -18,41 +18,54 @@ block content
         div(class="#{article.primary ? 'articleDiv primary' :'articleDiv'}")
 
             h2.id=article.id
-            h2.title(contenteditable='true')= article.title
-            p.article(contenteditable='true')=article.article
+
+            h2.title= article.title
+            p.article=article.article
             each category,i in article.categories
                 a(href="/article/category/#{category.title}") #{category.title}
-                |&nbsp
+                | &nbsp
             p Written at &nbsp
-                span.date(contenteditable='true')= article.date
-            br
+                span.date= article.date
             hr
-            if article.primary
-              if('undefined' !== typeof(article.secondaries))
-                form(action="/article/#{article.id}/rmsecondaries", method="post")
-                    label Already added secondaries (multi select):
-                        select(name="id[]",multiple="true",size=article.secondaries.length)
-                             each secondary,i in article.secondaries
-                                 option(value=secondary.id) ID #{secondary.id}: #{secondary.title}
-                    br
-                    input.insert(type="submit",value="Remove Secondary")
 
-              if('undefined' !== typeof(article.secondaryArticles))
-              .selectSecondaryDiv
-                form(action="/article/#{article.id}/addsecondaries", method="post")
-                    label Secondary(multi select):
-                    br
-                    select(name="id[]",multiple="true",size="8")
+            if article.primary
+                if('undefined' !== typeof(article.secondaries))
+                    .left
+                        form(action="/article/#{article.id}/rmsecondaries", method="post")
+                            p Exisiting (multi select):
+                            select(name="id[]",multiple="true",size="5")
+                                each secondary,i in article.secondaries
+                                    option(value=secondary.id) ID #{secondary.id}: #{secondary.title}
+                            br
+                            input.insert(type="submit",value="Remove Secondary")
+
+                if('undefined' !== typeof(article.secondaryArticles))
+                .selectSecondaryDiv.right
+                    form(action="/article/#{article.id}/addsecondaries", method="post")
+                        p Available(multi select):
+
+                        select(name="id[]",multiple="true",size="5")
                             each secondary,i in article.secondaryArticles
                                 option(value=secondary.id) ID #{secondary.id}: #{secondary.title}
-                    br
-                    input.insert(type="submit",value="Add Secondary")
-
-
-
-              .qrDiv
-
-                   a.qrCodeURL(href="/article/qrcode/#{article.id}")
-                     img.qrcode
-                   p.qr http://der-zeitkurier.de?id=#{article.id}
+                        br
+                        input.insert(type="submit",value="Add Secondary")
+            .clean
             .articleFooter
+                hr
+                if article.primary
+                    .qrDiv
+                        a.qrCodeURL(href="/article/qrcode/#{article.id}")
+                            img.qrcode
+                        p.qr http://der-zeitkurier.de?id=#{article.id}
+                    .right.del
+                        form(action="/article/#{article.id}/delete")
+                            fieldset
+                                p.warning With this button you can delete the Article but  be careful you can not revert it!!!
+
+                                input.insert(type='submit',value='Delete Article')
+
+                if !article.primary
+                    a.insert(href="/article/#{article.id}/edit")  Edit
+                    if article.linebreaks
+                        span &nbsp is already formatted
+

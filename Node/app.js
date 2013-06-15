@@ -31,7 +31,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 if ('development' == app.get('env')) {
   app.use(express.errorHandler()); }
 
-app.get('/resetdb',routes.resetdb);
+//app.get('/resetdb',routes.resetdb);
 app.post('/article/input',article.insertArticleInDB);
 app.get('/article/input',article.showInputForm);
 app.get('/article/showall',article.showAll);
@@ -39,9 +39,14 @@ app.post("/article/:id/update",article.updateById);
 app.post("/article/:id/addsecondaries",article.addSecondaries);
 app.post("/article/:id/rmsecondaries",article.removeSecondaries);
 
+
 app.get("/article/qrcode/:id",article.getQrCode);
 app.get("/article/allqrcode",article.getAllQrCodes);
+app.get("/article/:id/edit",article.editById);
 app.get("/article/:id",article.showById);
+app.post("/article/:id/formatted",article.getByIdFormatted);
+app.get("/article/:id/printed",article.printedArticle)
+app.get("/article/:id/delete",article.deleteArticle)
 app.post("/article/:id",article.getById);
 app.get('/article/category/:category',article.showByCategory);
 app.get("/article",function(req,res){

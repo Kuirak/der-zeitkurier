@@ -5,6 +5,5 @@ module.exports = function (sequelize, DataTypes) {
         article: {type: DataTypes.TEXT, allowNull: false},
         primary:{type: DataTypes.BOOLEAN,allowNull: false},
         printed_count:{type: DataTypes.INTEGER,defaultValue:0}
-
     })
 };

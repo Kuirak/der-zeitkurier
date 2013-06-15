@@ -7,7 +7,7 @@ $(document).ready(function(){
         qr.ClassyQR({
             type:'url',
             url:url,
-            size:200
+            size:100
         });
     });
 });

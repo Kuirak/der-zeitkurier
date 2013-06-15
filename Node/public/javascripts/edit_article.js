@@ -1,6 +1,16 @@
 
 
 $(document).ready(function () {
+    function formatDate(date) {
+        var dateSplit = date.split('-');
+        if (dateSplit.length > 0&& dateSplit.length === 3)
+            return date;
+        else {
+            dateSplit = date.split('.');
+            return dateSplit[2] + '-' + dateSplit[1] + '-' + dateSplit[0];
+        }
+    }
+
     $('body').on('focus', '[contenteditable]', function() {
         var $this = $(this);
         $this.data('before', $this.html());
@@ -24,10 +34,11 @@ $(document).ready(function () {
             var article=$this.find('.article').text();
             var title=$this.find('.title').text();
             var date=$this.find('.date').text();
-            date = date.split('.');
-            date = date[2] + '-' + date[1] + '-' + date[0];
+            date = formatDate(date);
 
-            $.post('/article/'+ id +'/update',{article:{id:id,article:article,title:title,date:date}});
+            $.post('/article/'+ id +'/update',{article:{id:id,article:article,title:title,date:date}},function(){
+                $('#save').remove();
+            });
         });
         }
 

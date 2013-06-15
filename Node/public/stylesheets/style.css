@@ -47,17 +47,35 @@ a {
 }
 
 .qrcode{
-    width:150px;
-    height:150px;
+    width:100px;
+    height:100px;
+}
+
+
+.del{
+    width: 230px;
+}
+.qrDiv{
+
+    display: inline-block;
 }
 
 .selectSecondaryDiv {
     width: 230px;
-   float:left;
+
 }
 
-.qrDiv{
-    width: 220px;
-    float:right;
-    margin-right: 5px;
+.left{
+   float:left;
+}
+.right{
+   float: right;
+   margin-right: 5px;
+}
+.clean{
+    clear:both;
+}
+
+.warning{
+    color: red;
 }
