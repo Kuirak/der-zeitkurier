@@ -14,7 +14,16 @@ exports.index = function(req, res){
             categories[i]= category.title;
         }
         models.Article.count().success(function(count){
-            res.render('index', { title: 'Zeitkurier Database',categories:categories,count:count});
+            models.Article.count({where:{primary:true}}).success(function(primary_count){
+                res.render('index', {
+                    title: 'Zeitkurier Database',
+                    categories:categories,
+                    count:count,
+                    primary_count:primary_count,
+                    secondary_count: count -primary_count
+                });
+            });
+
         });
 
 

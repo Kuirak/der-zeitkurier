@@ -1,27 +1,31 @@
 extends layout
 
 block content
-  h1= title
-  p Articles in database: #{count}
+    .container
+        h1= title
+        p.text-info Articles in database: #{count}
+        p.text-info Primary Articles in Database: #{primary_count}
+        p.text-info Secondary Articles in Database: #{secondary_count}
+        p
+            a.btn.btn-success.btn-block(href="/article/input") Insert a new article
+        p
+            a.btn.btn-info.btn-block(href="/article/allqrcode") QrCode.zip
 
-  a.insert(href="/article/input") Insert a new article
-  br
-  br
-  a.insert(href="/article/allqrcode") QrCode.zip
-  form(name="articleById",action="article",method="get")
-    label Show Article by id:
-    input(type="number",name="id",value="1")
-    input(type="submit",value="Show")
-  if count != 0
-     a(href="/article/showall") Show all
-  else
+        form(name="articleById",action="article",method="get")
+                label Show Article by id: &nbsp
+                    input.input-mini(type="number",name="id",value="1")
+                    input.btn(type="submit",value="Show by id")
+        if count != 0
+            a.btn.btn-primary.btn-block(href="/article/showall") Show all
+        else
 
-  h2 By Categories
-  each category, i in categories
-    a(href="/article/category/#{category}") #{category}
-    br
-  else
-      label No Cateogries yet.
+        h2 By Categories
+        each category, i in categories
+          p
+            a.btn.btn-info.btn-block(href="/article/category/#{category}") #{category}
+
+        else
+            label No Cateogries yet.
 
 
 

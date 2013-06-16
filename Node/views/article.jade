@@ -17,9 +17,9 @@ block content
     each article in articles
         div(class="#{article.primary ? 'articleDiv primary' :'articleDiv'}")
 
-            h2.id=article.id
+            h3.id=article.id
 
-            h2.title= article.title
+            h3.title= article.title
             p.article=article.article
             each category,i in article.categories
                 a(href="/article/category/#{category.title}") #{category.title}

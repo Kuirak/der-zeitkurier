@@ -3,29 +3,25 @@ append scripts
     script(src='/javascripts/pickdate.js')
 
 block content
-   #formDiv
+   #formDiv.container
       form(name="article_input",method="post")
         label Title:
-        br
-        input(type="text",name="article[title]",size="65",required="true")
-        br
-        br
+
+        input.input-xxlarge(type="text",name="article[title]",size="65",required="true")
+
         label Article:
-        br
-        textarea(name="article[article]",cols="50",rows="20" ,required="true")
-        br
+
+        textarea.input-xxlarge(name="article[article]",cols="50",rows="20" ,required="true")
+
         label Categories , comma separated:
-        br
-        input(type="text", name="article[categories]",size="65",required="true")
-        br
-        br
+
+        input.input-xxlarge(type="text", name="article[categories]",size="65",required="true")
+
         label Release Date YYYY-MM-DD:
-        input#datepicker(type="text",name="article[date]",required="true")
+        input#datepicker(type="text",name="article[date]",required="true",data-date-format="yyyy-mm-dd",data-date-viewmode="years")
+
+        label.checkbox Primary Article
+            input.checkbox(type="checkbox",name="article[primary]")
         br
-        br
-        label Primary Article:
-        input(type="checkbox",name="article[primary]")
-        br
-        br
-        input#submit.insert(type="submit",value="Insert into Database")
+        input#submit.btn-large.btn-primary.btn-block(type="submit",value="Insert into Database")
 
