@@ -15,9 +15,11 @@ def scanner_handler(proc, image, closure):
             print 'decoded', symbol.type, 'symbol', '"%s"' % symbol.data
 
 scanner = zeitscanner.Scanner('/dev/video0', scanner_handler)
-scanner.activate()
-scanner.wait()
+results = scanner.scan_one()
 
+for symbol in results:
+    # do something useful with results
+    print 'decoded', symbol.type, 'symbol', '"%s"' % symbol.data
 
 
 #article = dbclient.get_article(1)
