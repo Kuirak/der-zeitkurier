@@ -14,13 +14,13 @@ class ArticleDatabaseClient:
 
     def get_article(self, articleid):
         self.connect()
-        self.conn.request("POST", "/article/" + str(articleid), headers=self.headers)
+        self.conn.request("POST", "/article/" + str(articleid)+"/formatted", headers=self.headers)
         response = self.conn.getresponse()
         if response.status == 200:
             data = response.read()
             art = json.loads(data)
             article = art['article']
-            return zeitarticle.Article(article['title'], article['article'], article['categories'], article['date'])
+            return zeitarticle.Article(article['title'], article['article'], article['date'])
 
     def connect(self):
         self.conn = httplib.HTTPConnection(self.url)

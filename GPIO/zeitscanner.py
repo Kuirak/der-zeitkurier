@@ -14,7 +14,7 @@ class Scanner:
 #needs some testing
     def wait(self):
         try:
-            self.proc.user_wait()
+            self.proc.process_one()
         except zbar.WindowClosed:
             pass
 
