@@ -53,8 +53,13 @@ exports.getByIdFormatted = function (req, res) {
             res.status(404).end();
             return;
         }
-        var art = {title: article.title.split('<br>'), article: article.article.split('<br>'), date: article.date}
-        res.send({article: art}).status(200).end();
+        article.getSecondary().success(function(articles){
+            var rand= Number.random(articles.length);
+            var randArt = articles[rand];
+            var art = {title: randArt.title.split('<br>'), article: randArt.article.split('<br>'), date: randArt.date}
+            res.send({article: art}).status(200).end();
+        });
+
     });
 };
 

@@ -5,8 +5,6 @@ import zeitscanner
 
 
 dbclient = zeitarticledbclient.ArticleDatabaseClient("localhost:3000")
-
-
 scanner = zeitscanner.Scanner('/dev/video0')
 result = scanner.scan_one()
 print result
