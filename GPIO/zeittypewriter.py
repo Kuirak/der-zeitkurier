@@ -1,6 +1,6 @@
 import sys
 import time
-
+from __future__ import print_function
 
 class Typewriter:
     def printArticle(self, article):
@@ -13,9 +13,9 @@ class Typewriter:
     def printLine(self, line):
         for char in list(line):
             self.printChar(char)
-        print
+        print('\n')
 
     def printChar(self, char):
-        time.sleep(0.2)
-        sys.stdout.write(char)
+        time.sleep(0.1)
+        print(char, end='')
         # trigger key here
