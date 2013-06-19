@@ -1,4 +1,5 @@
 import sys
+import time
 
 
 class Typewriter:
@@ -15,4 +16,6 @@ class Typewriter:
         print
 
     def printChar(self, char):
+        time.sleep(0.2)
         sys.stdout.write(char)
+        # trigger key here
