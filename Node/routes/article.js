@@ -56,7 +56,7 @@ exports.getByIdFormatted = function (req, res) {
         article.getSecondary().success(function(articles){
             var rand= Number.random(articles.length);
             var randArt = articles[rand];
-            var art = {title: randArt.title.split('<br>'), article: randArt.article.split('<br>'), date: randArt.date}
+            var art = {id:randArt.id,title: randArt.title.split('<br>'), article: randArt.article.split('<br>'), date: randArt.date}
             res.send({article: art}).status(200).end();
         });
 

@@ -20,7 +20,12 @@ class ArticleDatabaseClient:
             data = response.read()
             art = json.loads(data)
             article = art['article']
-            return zeitarticle.Article(article['title'], article['article'], article['date'])
+            return zeitarticle.Article(article['id'], article['title'], article['article'], article['date'])
+
+    def printed(self, articleid):
+        self.connect()
+        self.conn.request("GET", "/article/" + str(articleid)+"/printed", headers=self.headers)
+        self.conn.getresponse()
 
     def connect(self):
         self.conn = httplib.HTTPConnection(self.url)
