@@ -8,14 +8,17 @@ class Scanner:
         self.proc.visible = False
         self.proc.init(device, False)
 
-
     def scan_one(self):
+        print 'Scanning'
         self.proc.process_one()
+
         result = None
         for symbol in self.proc.results:
+            print 'Scanned ' + symbol.type+': '+ symbol.data
             result = symbol.data
             index = result.find('=') + 1
             result = result[index:]
+            print 'parsed result'
         return result
 
 

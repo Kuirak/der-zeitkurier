@@ -40,7 +40,6 @@ exports.getById = function (req, res) {
                 var cat = art.categories[i];
                 art.categories[i] = cat.title;
             }
-
             res.send({article: {title: art.title, article: art.article, categories: art.categories, date: art.date}});
         })
     })
@@ -54,14 +53,37 @@ exports.getByIdFormatted = function (req, res) {
             return;
         }
         article.getSecondary().success(function(articles){
-            var rand= Number.random(articles.length-1);
-            var randArt = articles[rand];
-            var art = {id:randArt.id,title: randArt.title.split('<br>'), article: randArt.article.split('<br>'), date: randArt.date}
-            res.send({article: art}).status(200).end();
+            if(articles.length >0){
+                var rand= Number.random(articles.length-1);
+                var randArt = formatArticle(articles[rand]);
+                var art = {articleId:randArt.id,title: randArt.title, article: randArt.article, date: randArt.date};
+                res.send({article: art}).status(200).end();
+            } else{
+                res.status(404).end();
+            }
         });
 
     });
 };
+
+
+function formatArticle(article){
+
+
+    article.title = article.title.split('<br>') ;
+    for (var i = 0; i < article.title.length; i++) {
+        var titleline = article.title[i];
+        article.title[i]= titleline.compact();
+    }
+    article.article =article.article.split('<br>');
+    for (var j = 0; j < article.article.length; j++) {
+        var articleline = article.article[j];
+        article.article[j]= articleline.compact();
+    }
+    article.date= formatDate(article.date);
+    return article;
+}
+
 
 exports.printedArticle = function(req,res){
     models.Article.find(req.params.id).success(function(article){
