@@ -5,8 +5,8 @@ class Scanner:
     def __init__(self, device):
         self.proc = zbar.Processor()
         self.proc.parse_config('enable')
-        self.proc.visible = False
         self.proc.init(device, False)
+        self.proc.visible = False
 
     def scan_one(self):
         print 'Scanning'
