@@ -14,7 +14,7 @@ class Scanner:
 
         result = None
         for symbol in self.proc.results:
-            print 'Scanned ' + symbol.type+': '+ symbol.data
+            print 'Scanned ' + str(symbol.type)+': ' + str(symbol.data)
             result = symbol.data
             index = result.find('=') + 1
             result = result[index:]

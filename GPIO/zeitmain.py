@@ -1,7 +1,9 @@
 import zeitarticledbclient
 import zeittypewriter
 import zeitscanner
+import os
 
+os.system("fuser -k /dev/video0")
 while True:
     dbClient = zeitarticledbclient.ArticleDatabaseClient("localhost:3000")
     scanner = zeitscanner.Scanner('/dev/video0')
