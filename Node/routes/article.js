@@ -73,14 +73,14 @@ function formatArticle(article){
     article.title = article.title.split(breaker) ;
     for (var i = 0; i < article.title.length; i++) {
         var titleline = article.title[i];
-        article.title[i]= titleline.compact();
+        article.title[i]= titleline.compact().replace(/[^0-9a-zA-Z\s!"§÷%&\/\(\)=\?,;\.:\-_öüäÖÜÄß']/g,"");
     }
     article.article =article.article.split(breaker);
     for (var j = 0; j < article.article.length; j++) {
         var articleline = article.article[j];
-        article.article[j]= articleline.compact();
+        article.article[j]= articleline.compact().replace(/[^0-9a-zA-Z\s!"§÷%&\/\(\)=\?,;\.:\-_öüäÖÜÄß']/g,"");
     }
-    article.date= formatDate(article.date);
+    article.date= formatDate(article.date).replace(/[^0-9a-zA-Z\s!"§÷%&\/\(\)=\?,;\.:\-_öüäÖÜÄß']/g,"");
     return article;
 }
 
