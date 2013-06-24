@@ -37,7 +37,7 @@ $(document).ready(function () {
             date = formatDate(date);
 
             $.post('/article/'+ id +'/update',{article:{id:id,article:article,title:title,date:date}},function(){
-                $('#save').remove();
+                location.reload();
             });
         });
         }
