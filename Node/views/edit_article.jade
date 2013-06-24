@@ -1,11 +1,11 @@
 extends layout
 append scripts
+    script(src='/javascripts/lib/highlightRegex.js')
     script(src='/javascripts/edit_article.js')
 
 block content
     hr
     .articleDiv
-
         h2.id=article.id
         h2.title(contenteditable='true')=article.title
         p.article(contenteditable='true')=article.article
@@ -13,3 +13,8 @@ block content
         .articleFooter
             form(action="/article/#{article.id}/delete")
                 input.insert(type='submit',value='Delete Article')
+    .articleHighlight.articleDiv
+        h2.id=article.id
+        h2.title=article.title
+        p.article=article.article
+        p.date=article.date

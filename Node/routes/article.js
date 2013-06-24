@@ -2,7 +2,7 @@ var async = require("async")
     , archiver = require("archiver")
     , sugar = require('sugar');
 var models = require('../models');
-
+var breaker = '%n%';
 
 exports.showById = function (req, res) {
     models.Article.find(req.params.id).success(function (art) {
@@ -70,12 +70,12 @@ exports.getByIdFormatted = function (req, res) {
 function formatArticle(article){
 
 
-    article.title = article.title.split('<br>') ;
+    article.title = article.title.split(breaker) ;
     for (var i = 0; i < article.title.length; i++) {
         var titleline = article.title[i];
         article.title[i]= titleline.compact();
     }
-    article.article =article.article.split('<br>');
+    article.article =article.article.split(breaker);
     for (var j = 0; j < article.article.length; j++) {
         var articleline = article.article[j];
         article.article[j]= articleline.compact();
@@ -134,9 +134,11 @@ function loadCategoriesForArticles(art, callback) {
 
 function formatForDisplay(art) {
     art.date = formatDate(art.date);
-    if(art.title.has(/<br>/) || art.article.has(/<br>/)){
-    art.title = art.title.remove(/<br>/g);
-    art.article = art.article.remove(/<br>/g);
+    var regex = new RegExp(breaker);
+    regex.addFlag("g");
+    if(art.title.has(regex) || art.article.has(regex)){
+    art.title = art.title.remove(regex);
+    art.article = art.article.remove(regex);
     art.linebreaks =true;
     }else{
         art.linebreaks = false;
@@ -397,12 +399,12 @@ function updateArticle(article_data, callback) {
 
 function insertArticle(article_data, callback) {
     var Article = models.Article;
-    Article.find({where: {title: article_data.title.compact(), date: article_data.date}}).success(function (article) {
+    Article.find({where: {title: article_data.title.compact().normalize(), date: article_data.date}}).success(function (article) {
         if (article && !article_data.primary) {
             callback(null, article.id);
             return;
         }
-        Article.create({title: article_data.title.compact(), article: article_data.article.compact(), date: article_data.date, primary: article_data.primary || false})
+        Article.create({title: article_data.title.compact().normalize(), article: article_data.article.compact().normalize(), date: article_data.date, primary: article_data.primary || false})
             .success(function (createdArticle) {
                 if (!createdArticle) {
                     callback(new Error("Couldn't Create database entry for " + article_data.title));

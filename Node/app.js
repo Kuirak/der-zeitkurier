@@ -45,8 +45,8 @@ app.get("/article/allqrcode",article.getAllQrCodes);
 app.get("/article/:id/edit",article.editById);
 app.get("/article/:id",article.showById);
 app.post("/article/:id/formatted",article.getByIdFormatted);
-app.get("/article/:id/printed",article.printedArticle)
-app.get("/article/:id/delete",article.deleteArticle)
+app.get("/article/:id/printed",article.printedArticle);
+app.get("/article/:id/delete",article.deleteArticle);
 app.post("/article/:id",article.getById);
 app.get('/article/category/:category',article.showByCategory);
 app.get("/article",function(req,res){
@@ -55,7 +55,7 @@ app.get("/article",function(req,res){
         article.showById(req,res);
     }
 });
-app.get('/404',routes.notFound)
+app.get('/404',routes.notFound);
 app.get('/', routes.index);
 
 

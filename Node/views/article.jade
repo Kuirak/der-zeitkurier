@@ -1,6 +1,7 @@
 extends layout
 append scripts
     //script(src='/javascripts/edit_article.js')
+    script(src='/javascripts/lib/highlightRegex.js')
     script(src='/javascripts/lib/jquery.classyqr.js')
     script(src='/javascripts/qrcode.js')
 
@@ -51,8 +52,9 @@ block content
                         input.insert(type="submit",value="Add Secondary")
             .clean
             .articleFooter
-                hr
+
                 if article.primary
+                    hr
                     .qrDiv
                         a.qrCodeURL(href="/article/qrcode/#{article.id}")
                             img.qrcode
