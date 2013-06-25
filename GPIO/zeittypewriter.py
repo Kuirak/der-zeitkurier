@@ -8,7 +8,6 @@ import zeitelectronics
 class Typewriter:
 
     def __init__(self):
-
         f = open('mapping.csv', 'rb')
         reader = csv.DictReader(f, delimiter=",")
         f.close()

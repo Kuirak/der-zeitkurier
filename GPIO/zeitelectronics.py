@@ -16,15 +16,12 @@ class TypwriterElectronics:
         self.triggerReset()
 
     def triggerCapslock(self):
-        # set output for shift
         self.triggerOutput(self.keymap["shift"]["output"])
         print "Shift"
 
     def triggerReset(self):
-        #set all outputs to 0
         self.resetOutputArray()
         self.sendToShiftRegister()
-        #stream self.outputArray to shiftregister and latch
         print "reset"
         time.sleep(0.005)
 
@@ -36,7 +33,7 @@ class TypwriterElectronics:
 
     def resetOutputArray(self):
         count = 0
-        while count < 46:
+        while count < 47:
             self.outputArray[count] = 0
             count += 1
 
