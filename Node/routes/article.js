@@ -133,12 +133,10 @@ function loadCategoriesForArticles(art, callback) {
 }
 
 function formatForDisplay(art) {
-    art.date = formatDate(art.date);
-    var regex = new RegExp(breaker);
-    regex.addFlag("g");
-    if(art.title.has(regex) || art.article.has(regex)){
-    art.title = art.title.remove(regex);
-    art.article = art.article.remove(regex);
+    art.date = formatDate(art.date);    
+    if(art.title.has(/%n%/g) || art.article.has(/%n%/g)){
+    art.title = art.title.remove(/%n%/g);
+    art.article = art.article.remove(/%n%/g);
     art.linebreaks =true;
     }else{
         art.linebreaks = false;
