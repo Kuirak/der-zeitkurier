@@ -6,7 +6,7 @@ from optparse import OptionParser
 
 
 parser = OptionParser()
-parser.add_option("-s", "--scan", help="Run script without Scanning QRCode", dest="scanning", default=True)
+parser.add_option("-s", "--scan", help="Run script without Scanning QRCode", dest="scanning", default='True')
 parser.add_option("-a", "--article", help="Use this article as source", dest="articleId", default=0)
 
 (options, args) = parser.parse_args()
