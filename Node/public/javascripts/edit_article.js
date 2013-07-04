@@ -44,8 +44,8 @@ $(document).ready(function () {
 
 
     });
-    $('.title','.articleHighlight').highlightRegex(/[^0-9a-zA-Z\s!"§÷%&\/\(\)=\?,;\.:\-_öüäÖÜÄß']/g);
-    $('.article','.articleHighlight').highlightRegex(/[^0-9a-zA-Z\s!"§÷%&\/\(\)=\?,;\.:\-_öüäÖÜÄß']/g);
+    $('.title','.articleHighlight').highlightRegex(/[^0-9a-zA-Z\s!"§%&\/\(\)=\?,;\.:\-_öüäÖÜÄ']/g);
+    $('.article','.articleHighlight').highlightRegex(/[^0-9a-zA-Z\s!"§%&\/\(\)=\?,;\.:\-_öüäÖÜÄ']/g);
 
 });
 
