@@ -1,12 +1,19 @@
-import time
+from time import sleep
+import wiringpi
 
 
-class TypwriterElectronics:
+class TypewriterElectronics:
+    DSPin = 10
+    LatchPin = 9
+    ClockPin = 11
+
     def __init__(self, keymap):
         self.keymap = keymap
         print keymap
-        self.outputArray = [0]*46
+        self.outputArray = [0] * 46
         self.resetOutputArray()
+        wiringpi.wiringPiSetupGpio()
+       
 
     def triggerChar(self, name):
         name = name.encode('utf8')
@@ -24,14 +31,14 @@ class TypwriterElectronics:
         print "reset"
         self.resetOutputArray()
         self.sendToShiftRegister()
-        time.sleep(0.005)
+        sleep(0.005)
 
     def triggerOutput(self, number, name):
         print name + ": " + number
-        number = int(number)-1
+        number = int(number) - 1
         self.outputArray[number] = 1
         self.sendToShiftRegister()
-        time.sleep(0.005)
+        sleep(0.005)
 
     def resetOutputArray(self):
         count = 0
@@ -50,3 +57,4 @@ class TypwriterElectronics:
     def shiftOut(self):
         print "Shift out"
         #shift self.outputArray to shift register
+

@@ -18,8 +18,7 @@ typewriter = zeittypewriter.Typewriter()
 while True:
     dbClient = zeitarticledbclient.ArticleDatabaseClient("localhost:3000")
 
-    if options.scanning  == 'True':
-        result = 0
+    if options.scanning == 'True':
         result = scanner.scan_one()
     else:
         result = options.articleId
