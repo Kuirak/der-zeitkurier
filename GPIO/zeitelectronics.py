@@ -4,36 +4,38 @@ import time
 class TypwriterElectronics:
     def __init__(self, keymap):
         self.keymap = keymap
-        self.outputArray = []
+        print keymap
+        self.outputArray = [0]*46
         self.resetOutputArray()
 
     def triggerChar(self, name):
+        name = name.encode('utf8')
         output = self.keymap[name]["output"]
         capslock = self.keymap[name]["capslock"]
         if capslock:
             self.triggerCapslock()
-        self.triggerOutput(output)
+        self.triggerOutput(output, name)
         self.triggerReset()
 
     def triggerCapslock(self):
-        self.triggerOutput(self.keymap["shift"]["output"])
-        print "Shift"
+        self.triggerOutput(self.keymap["shift"]["output"], "Shift")
 
     def triggerReset(self):
+        print "reset"
         self.resetOutputArray()
         self.sendToShiftRegister()
-        print "reset"
         time.sleep(0.005)
 
-    def triggerOutput(self, number):
-        print number
+    def triggerOutput(self, number, name):
+        print name + ": " + number
+        number = int(number)-1
         self.outputArray[number] = 1
         self.sendToShiftRegister()
         time.sleep(0.005)
 
     def resetOutputArray(self):
         count = 0
-        while count < 47:
+        while count < 46:
             self.outputArray[count] = 0
             count += 1
 
