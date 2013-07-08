@@ -1,6 +1,6 @@
 import zeitarticledbclient
 import zeittypewriter
-#import zeitscanner
+import zeitscanner
 import os
 from optparse import OptionParser
 
@@ -12,7 +12,7 @@ parser.add_option("-a", "--article", help="Use this article as source", dest="ar
 (options, args) = parser.parse_args()
 if options.scanning == 'True':
     os.system("fuser -k /dev/video0")
-    #scanner = zeitscanner.Scanner('/dev/video0')
+    scanner = zeitscanner.Scanner('/dev/video0')
 typewriter = zeittypewriter.Typewriter()
 
 while True:
@@ -20,7 +20,7 @@ while True:
 
     if options.scanning  == 'True':
         result = 0
-        #result = scanner.scan_one()
+        result = scanner.scan_one()
     else:
         result = options.articleId
     article = dbClient.get_article(result)
