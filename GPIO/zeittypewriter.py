@@ -19,6 +19,8 @@ class Typewriter:
             self.keymap[row["key"]] = {"output": row["output"], "capslock": row["capslock"] == 'TRUE'}
     
     def printArticle(self, article):
+        for x in range(0,17):
+            self.printNewLine()
         for line in article.title:
             self.printLine(line)
         self.printNewLine()
@@ -33,7 +35,7 @@ class Typewriter:
         self.printNewLine()
 
     def printChar(self, char):
-        triggerTime = random.uniform(0.1, 0.2)
+        triggerTime = random.uniform(0.05, 0.15)
         sleep(triggerTime)
         if char == " ":
             self.electronics.triggerChar("space")

@@ -11,7 +11,7 @@ parser.add_option("-a", "--article", help="Use this article as source", dest="ar
 
 (options, args) = parser.parse_args()
 if options.scanning == 'True':
-    os.system("fuser -k /dev/video0")
+    os.system(" sudo fuser -k /dev/video0")
     scanner = zeitscanner.Scanner('/dev/video0')
 typewriter = zeittypewriter.Typewriter()
 

@@ -53,28 +53,30 @@ class TypewriterElectronics:
         self.shiftOut()
         self.latch(1)
 
-    def latch(self,toggle):               
+    def latch(self,toggle):
+        sleep(0.001)
         wiringpi.digitalWrite(self.LatchPin,toggle)
-        sleep(0.002)
+        
 
     def shiftOut(self):        
         for value in self.outputArray:
             if value == 1:
+                sleep(0.0001)
                 wiringpi.digitalWrite(self.DSPin,1)
-                sleep(0.001)
+                sleep(0.0001)
                 wiringpi.digitalWrite(self.ClockPin, 1)
-                sleep(0.001)
+                sleep(0.0001)
                 wiringpi.digitalWrite(self.ClockPin, 0)
-                sleep(0.001)
-                wiringpi.digitalWrite(self.DSPin,0)
-                sleep(0.001)
+                sleep(0.0001)
+                wiringpi.digitalWrite(self.DSPin,0)                
             else:
+                sleep(0.0001)
                 wiringpi.digitalWrite(self.DSPin,0)
-                sleep(0.001)
+                sleep(0.0001)
                 wiringpi.digitalWrite(self.ClockPin, 1)
-                sleep(0.001)
+                sleep(0.0001)
                 wiringpi.digitalWrite(self.ClockPin, 0)
-                sleep(0.001)
+                
                 
             
 
