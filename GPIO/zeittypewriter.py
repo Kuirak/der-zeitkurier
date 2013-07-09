@@ -11,10 +11,13 @@ class Typewriter:
         f = open('mapping.csv', 'rb')
         reader = csv.DictReader(f, delimiter=",")
         self.keymap = {}
-        for row in reader:
-            self.keymap[row["key"]] = {"output": row["output"], "capslock": row["capslock"] == 'TRUE'}
+        self.rowRead(reader)
         self.electronics = zeitelectronics.TypewriterElectronics(self.keymap)
 
+    def rowRead(self,reader):
+        for row in reader:
+            self.keymap[row["key"]] = {"output": row["output"], "capslock": row["capslock"] == 'TRUE'}
+    
     def printArticle(self, article):
         for line in article.title:
             self.printLine(line)
@@ -30,7 +33,7 @@ class Typewriter:
         self.printNewLine()
 
     def printChar(self, char):
-        triggerTime = random.uniform(0.15, 0.3)
+        triggerTime = random.uniform(0.1, 0.2)
         sleep(triggerTime)
         if char == " ":
             self.electronics.triggerChar("space")

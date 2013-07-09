@@ -6,12 +6,11 @@ class TypewriterElectronics:
     
 
     def __init__(self, keymap):
-        self.DSPin = 10
-        self.LatchPin = 9
-        self.ClockPin = 11
-        self.keymap = keymap
-        print keymap
-        self.outputArray = [0] * 46
+        self.DSPin = 24
+        self.LatchPin = 23
+        self.ClockPin = 25
+        self.keymap = keymap        
+        self.outputArray = [0] * 48
         self.resetOutputArray()
         wiringpi.wiringPiSetupGpio()
         wiringpi.pinMode(self.DSPin,1)
@@ -32,21 +31,20 @@ class TypewriterElectronics:
         self.triggerOutput(self.keymap["shift"]["output"], "Shift")
 
     def triggerReset(self):
-        print "reset"
         self.resetOutputArray()
         self.sendToShiftRegister()
-        sleep(0.005)
+        sleep(0.002)
 
     def triggerOutput(self, number, name):
         print name + ": " + number
         number = int(number) - 1
         self.outputArray[number] = 1
         self.sendToShiftRegister()
-        sleep(0.005)
+        sleep(0.002)
 
     def resetOutputArray(self):
         count = 0
-        while count < 46:
+        while count < 48:
             self.outputArray[count] = 0
             count += 1
 
@@ -55,23 +53,28 @@ class TypewriterElectronics:
         self.shiftOut()
         self.latch(1)
 
-    def latch(self,toggle):
-        print "Latch"
-        sleep(0.05)
+    def latch(self,toggle):               
         wiringpi.digitalWrite(self.LatchPin,toggle)
+        sleep(0.002)
 
-    def shiftOut(self):
-        print "Shift out"
+    def shiftOut(self):        
         for value in self.outputArray:
             if value == 1:
                 wiringpi.digitalWrite(self.DSPin,1)
+                sleep(0.001)
                 wiringpi.digitalWrite(self.ClockPin, 1)
+                sleep(0.001)
                 wiringpi.digitalWrite(self.ClockPin, 0)
+                sleep(0.001)
                 wiringpi.digitalWrite(self.DSPin,0)
+                sleep(0.001)
             else:
                 wiringpi.digitalWrite(self.DSPin,0)
+                sleep(0.001)
                 wiringpi.digitalWrite(self.ClockPin, 1)
+                sleep(0.001)
                 wiringpi.digitalWrite(self.ClockPin, 0)
+                sleep(0.001)
                 
             
 
