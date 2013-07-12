@@ -1,5 +1,5 @@
 from __future__ import print_function
-import time
+from time import sleep
 import random
 import csv
 import zeitelectronics
@@ -10,13 +10,17 @@ class Typewriter:
     def __init__(self):
         f = open('mapping.csv', 'rb')
         reader = csv.DictReader(f, delimiter=",")
-        f.close()
         self.keymap = {}
+        self.rowRead(reader)
+        self.electronics = zeitelectronics.TypewriterElectronics(self.keymap)
+
+    def rowRead(self,reader):
         for row in reader:
             self.keymap[row["key"]] = {"output": row["output"], "capslock": row["capslock"] == 'TRUE'}
-        self.electronics = zeitelectronics.TypwriterElectronics(self.keymap)
-
+    
     def printArticle(self, article):
+        for x in range(0,17):
+            self.printNewLine()
         for line in article.title:
             self.printLine(line)
         self.printNewLine()
@@ -31,8 +35,8 @@ class Typewriter:
         self.printNewLine()
 
     def printChar(self, char):
-        triggerTime = random.uniform(0.15, 0.3)
-        time.sleep(triggerTime)
+        triggerTime = random.uniform(0.05, 0.15)
+        sleep(triggerTime)
         if char == " ":
             self.electronics.triggerChar("space")
         elif char == "=":
@@ -46,9 +50,11 @@ class Typewriter:
 
     def printNewLine(self):
         print()
+        self.hitReturn()
 
     def hitReturn(self):
         self.electronics.triggerChar("return")
+        sleep(0.3)
 
 
 
