@@ -12,7 +12,7 @@ class TypewriterElectronics:
         self.keymap = keymap        
         self.outputArray = [0] * 48
         self.resetOutputArray()
-	self.timeout =0.0002
+	self.timeout =0.0005
         wiringpi.wiringPiSetupGpio()
         wiringpi.pinMode(self.DSPin,1)
         wiringpi.pinMode(self.LatchPin,1)
