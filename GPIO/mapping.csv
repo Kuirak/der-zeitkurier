@@ -15,7 +15,7 @@ m,13,
 n,14,
 o,15,
 p,16,
-q,17,
+q,15,
 r,18,
 s,19,
 t,20,
@@ -66,7 +66,7 @@ M,13,TRUE
 N,14,TRUE
 O,15,TRUE
 P,16,TRUE
-Q,17,TRUE
+Q,15,TRUE
 R,18,TRUE
 S,19,TRUE
 T,20,TRUE
@@ -88,3 +88,4 @@ singlequote,43,TRUE
 shift,44,
 space,45,
 return,46,
+capslock,17,
