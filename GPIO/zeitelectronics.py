@@ -26,6 +26,7 @@ class TypewriterElectronics:
         if capslock:
             self.triggerCapslock()
 	    self.triggerOutput(output, name)
+	    self.triggerUncapslock()
 	else:
 	    self.triggerOutput(output, name)
         self.triggerReset()
